@@ -49,7 +49,8 @@ Heartbeat.prototype.pulse = function (host, category, type, name, callback) {
   } else {
 
     this._lastPulse[beatId] = Date.now();
-    var url = this._baseUrl + '/pulse?host=' + host + '&category=' + category + '&type=' + type + '&name=' + name;
+    var slash = /\/$/.test(this._baseUrl) ? '' : '/';
+    var url = this._baseUrl + slash + 'pulse?host=' + host + '&category=' + category + '&type=' + type + '&name=' + name;
     
     request(url, function (err, res, body) {
       if (!err) (typeof callback === 'function') ? callback(null, body) : console.log(body);
