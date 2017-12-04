@@ -44,7 +44,7 @@ Heartbeat.prototype.pulse = function (host, category, type, name, callback) {
   var lastPulse = _.has(this._lastPulse, beatId) ? this._lastPulse[beatId] : 0;
 
   if (Date.now() - lastPulse < this._pulse * 1000) {
-    typeof callback === 'function' ? callback(null, 'Skipped pulse: Last pulse was send less than ' + this._pulse + ' seconds ago') : console.log('Skipped pulse: Last pulse was send less than ' + this._pulse + ' seconds ago');
+    if (typeof callback === 'function') callback(null, { result: 'skipped' });
 
   } else {
 
@@ -54,7 +54,7 @@ Heartbeat.prototype.pulse = function (host, category, type, name, callback) {
     
     request(url, function (err, res, body) {
       if (!err) (typeof callback === 'function') ? callback(null, body) : console.log(body);
-      else (typeof callback === 'function') ? callback(err) : console.log(err);
+      else (typeof callback === 'function') ? callback(err) : console.error(err);
     });
 
   }
