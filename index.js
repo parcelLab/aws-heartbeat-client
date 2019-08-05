@@ -36,10 +36,12 @@ function Heartbeat(baseUrl, pulse) {
  * @param {string} category
  * @param {string} type
  * @param {string} name
+ * @param {string} threshold
  * @param {HeartbeatTimer~callback}[callback] - optional
  */
-Heartbeat.prototype.pulse = function (host, category, type, name, callback) {
-
+Heartbeat.prototype.pulse = function (host, category, type, name, threshold, callback) {
+   
+  if (typeof threshold === 'function') callback = threshold;
   var beatId = host + '-' + category + '-' + type + '-' + name;
   var lastPulse = _.has(this._lastPulse, beatId) ? this._lastPulse[beatId] : 0;
 
@@ -51,7 +53,7 @@ Heartbeat.prototype.pulse = function (host, category, type, name, callback) {
     this._lastPulse[beatId] = Date.now();
     var slash = /\/$/.test(this._baseUrl) ? '' : '/';
     var url = this._baseUrl + slash + 'pulse?host=' + host + '&category=' + category + '&type=' + type + '&name=' + name;
-    
+    if (threshold && typeof threshold !== 'function') url += '&threshold=' + threshold;
     request(url, function (err, res, body) {
       if (!err) (typeof callback === 'function') ? callback(null, body) : console.log(body);
       else (typeof callback === 'function') ? callback(err) : console.error(err);
