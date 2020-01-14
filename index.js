@@ -41,6 +41,13 @@ function Heartbeat(baseUrl, pulse) {
  */
 Heartbeat.prototype.pulse = function (host, category, type, name, threshold, callback) {
    
+  // only pulse in production mode
+  if (process.env.PRODUCTION === undefined
+  || !(/^(?:yes|true|1|on)$/i).test(process.env.PRODUCTION.toString())) {
+    console.log('<aws-heartbeat-client> [NOTICE] supressing heartbeat pulse outside of production mode');
+    return false;
+  }
+
   if (typeof threshold === 'function') callback = threshold;
   var beatId = host + '-' + category + '-' + type + '-' + name;
   var lastPulse = _.has(this._lastPulse, beatId) ? this._lastPulse[beatId] : 0;
