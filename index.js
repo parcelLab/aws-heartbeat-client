@@ -14,12 +14,11 @@ var _ = require('underscore');
  * @param {string} baseUrl - the url of your aws api without the query parameters
  * @param {number} pulse  - seconds to wait for next api call 
  */
-function Heartbeat(baseUrl, pulse) {
+function Heartbeat(baseUrl, pulse = 60) {
 
   // validate
   if (_.isUndefined(baseUrl)) return console.error('Url of heartbeat service is missing');
   if (!_.isNumber(pulse) || _.isNaN(pulse) || pulse < 0) return console.error('Pulse must be positive integer');
-  if (_.isUndefined(pulse)) pulse = 60;
 
   // init
   this._lastPulse = {};
