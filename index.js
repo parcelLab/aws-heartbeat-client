@@ -63,8 +63,9 @@ Heartbeat.prototype.pulse = function (host, category, type, name, threshold, cal
     var url = this._baseUrl + slash + 'pulse?host=' + host + '&category=' + category + '&type=' + type + '&name=' + name;
     if (threshold && typeof threshold !== 'function') url += '&threshold=' + threshold;
     request(url, function (err, res, body) {
-      if (!err) (typeof callback === 'function') ? callback(null, body) : console.log(body);
-      else (typeof callback === 'function') ? callback(err) : console.error(err);
+      if (err) (typeof callback === 'function') ? callback(err) : console.error(err);
+      else if (res && res.statusCode >= 400) (typeof callback === 'function') ? callback(new Error(res.statusCode + ' ' + res.statusMessage)) : console.log(res.statusMessage);
+      else (typeof callback === 'function') ? callback(null, body) : console.log(body);
     });
 
   }
