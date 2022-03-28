@@ -9,8 +9,7 @@
   "author": "Bene Stangl",
   "license": "MIT",
   "dependencies": {
-    "graphql": "^15.6.1",
-    "graphql-request": "^3.6.1",
-    "underscore": "^1.13.1"
+    "underscore": "^1.13.1",
+    "request": "^2.83.0"
   }
 }
