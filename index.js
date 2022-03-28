@@ -9,7 +9,7 @@ const { GraphQLClient, gql } = require('graphql-request')
 const graphQlUri = 'https://zelda.parcellab.com/graphql-next'
 const graphQLClient = new GraphQLClient(graphQlUri, {
   headers: {
-    Authorization: 'Token ' + process.env.ZELDA_AUTH_TOKEN
+    Authorization: 'Token ' + "2ef0cbdc1402c844ca70092826a3186c16e504a1"
   }
 })
 
@@ -46,6 +46,13 @@ Heartbeat.prototype.pulse = function (host, category, type, name, threshold, cal
 
   if (typeof threshold === 'function') callback = threshold;
 
+
+  var beatId = host + '-' + category + '-' + type + '-' + name;
+  var lastPulse = _.has(this._lastPulse, beatId) ? this._lastPulse[beatId] : 0;
+  var thresholdHrs = 25
+  if (category === "manfred") {
+    thresholdHrs = 0
+  }
   // only pulse in production mode
   if (process.env.PRODUCTION === undefined
     || !(/^(?:yes|true|1|on)$/i).test(process.env.PRODUCTION.toString())) {
@@ -53,10 +60,6 @@ Heartbeat.prototype.pulse = function (host, category, type, name, threshold, cal
     if (typeof callback === 'function') callback(null, { result: 'aborted' });
     return false;
   }
-
-  var beatId = host + '-' + category + '-' + type + '-' + name;
-  var lastPulse = _.has(this._lastPulse, beatId) ? this._lastPulse[beatId] : 0;
-
   if (Date.now() - lastPulse < this._pulse * 1000) {
     if (typeof callback === 'function') callback(null, { result: 'skipped' });
 
@@ -90,17 +93,11 @@ Heartbeat.prototype.pulse = function (host, category, type, name, threshold, cal
     }
     graphQLClient.request(query, variables)
       .then((data) => {
-        callback(null, {
-          statusCode: 200,
-          body: "Successful Heartbeat pulse"
-        })
+        (typeof callback === 'function') ? callback(null, { statusCode: 200, body: "Successful Heartbeat pulse" }) : console.log("Successful Heartbeat pulse")
       })
       .catch((err) => {
         console.log('error' + `${err}`)
-        callback({
-          statusCode: err.statusCode,
-          body: 'error' + `${err}`
-        })
+          (typeof callback === 'function') ? callback({ statusCode: err.statusCode, body: 'error' + `${err}` }) : console.log(`${err}`)
       })
   }
 };
