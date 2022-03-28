@@ -22,12 +22,9 @@ const graphQLClient = new GraphQLClient(graphQlUri, {
  * @param {number} pulse  - seconds to wait for next api call 
  */
 function Heartbeat(baseUrl, pulse = 60) {
-
-  // validate
-  // init
   this._lastPulse = {};
 
-  // set
+  // Set pulse timer to 15 mins and ignore pulse and baseUrl from function call. These are only used for legacy compatibility and are otherwise unneeded
   this._pulse = 900;
   this._baseUrl = baseUrl;
 }
@@ -50,6 +47,8 @@ Heartbeat.prototype.pulse = function (host, category, type, name, threshold, cal
   var beatId = host + '-' + category + '-' + type + '-' + name;
   var lastPulse = _.has(this._lastPulse, beatId) ? this._lastPulse[beatId] : 0;
   var thresholdHrs = 25
+
+  // set threshold to 0 for heartbeats, which are raised actively, instead of always pulsing
   if (category === "manfred") {
     thresholdHrs = 0
   }
@@ -96,8 +95,7 @@ Heartbeat.prototype.pulse = function (host, category, type, name, threshold, cal
         (typeof callback === 'function') ? callback(null, { statusCode: 200, body: "Successful Heartbeat pulse" }) : console.log("Successful Heartbeat pulse")
       })
       .catch((err) => {
-        console.log('error' + `${err}`)
-          (typeof callback === 'function') ? callback({ statusCode: err.statusCode, body: 'error' + `${err}` }) : console.log(`${err}`)
+        (typeof callback === 'function') ? callback({ statusCode: err.statusCode, body: 'error' + `${err}` }) : console.log(`${err}`)
       })
   }
 };
