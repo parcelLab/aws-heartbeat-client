@@ -23,13 +23,13 @@ function Heartbeat(baseUrl, pulse = 60) {
   // init
   this._lastPulse = {};
 
-  // set
-  this._pulse = pulse;
+  // set pulse to every 30 mins, way more than enough. Ignore function setting
+  this._pulse = 1800;
   this._baseUrl = baseUrl;
 }
 
 /**
- * Send a pulse to the AWS heartbeat service
+ * Send a pulse to Zelda through AWS Gateway redirection 
  * @name HeartbeatTimer#pulse
  * @param {string} host
  * @param {string} category
@@ -39,12 +39,12 @@ function Heartbeat(baseUrl, pulse = 60) {
  * @param {HeartbeatTimer~callback}[callback] - optional
  */
 Heartbeat.prototype.pulse = function (host, category, type, name, threshold, callback) {
-  
+
   if (typeof threshold === 'function') callback = threshold;
 
   // only pulse in production mode
   if (process.env.PRODUCTION === undefined
-  || !(/^(?:yes|true|1|on)$/i).test(process.env.PRODUCTION.toString())) {
+    || !(/^(?:yes|true|1|on)$/i).test(process.env.PRODUCTION.toString())) {
     console.log('<aws-heartbeat-client> [NOTICE] supressing heartbeat pulse outside of production mode');
     if (typeof callback === 'function') callback(null, { result: 'aborted' });
     return false;
