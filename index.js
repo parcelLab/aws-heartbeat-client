@@ -29,7 +29,7 @@ function Heartbeat(baseUrl, pulse = 60) {
 }
 
 /**
- * Send a pulse to Zelda
+ * Send a pulse to Zelda through AWS Gateway redirection 
  * @name HeartbeatTimer#pulse
  * @param {string} host
  * @param {string} category
