@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "underscore": "^1.13.1",
-    "request": "^2.83.0"
+    "request": "^2.88.2"
   }
 }
