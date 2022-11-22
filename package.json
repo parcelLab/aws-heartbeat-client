@@ -9,7 +9,7 @@
   "author": "Bene Stangl",
   "license": "MIT",
   "dependencies": {
-    "underscore": "^1.13.1",
+    "underscore": "^1.13.6",
     "request": "^2.83.0"
   }
 }
